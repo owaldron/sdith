@@ -3,6 +3,10 @@
 
 #include "commons.h"
 
+#ifdef USE_LIBOQS
+#include <oqs/sha3_ops.h>
+#endif
+
 /**
  * Domain separation of the GGM tree and vole PRNGs.
  *
@@ -259,9 +263,20 @@ EXPORT void vole_rng_ext_cat5_rijndael256_ctrle_ref(void* out, uint64_t out_byte
 EXPORT void vole_rng_ext_cat5_rijndael256_ctrle_avx2(void* out, uint64_t out_bytes, const void* salt256,
                                                      const void* extseed, uint64_t repet_idx);
 
+
+#ifndef USE_LIBOQS
 typedef struct xof_ctx_t {
   uint64_t DUMMY[224 / 8];
 } xof_ctx;
+#else
+typedef struct xof_ctx_t {
+  uint32_t shake;  // 128 or 256, set by Keccak_HashInitialize_SHAKE*
+  union {
+    OQS_SHA3_shake128_inc_ctx shake128_state;
+    OQS_SHA3_shake256_inc_ctx shake256_state;
+  };
+} xof_ctx;
+#endif
 
 typedef void XOF_INIT_F(xof_ctx* xof);
 EXPORT void xof_init_shake128(xof_ctx* xof);

@@ -27,7 +27,8 @@ implementations: # owaldron TODO
   sources: >- # owaldron TODO remove rng.h/c and pipe to common impl. Also remove the temp api files
     integration/liboqs/api.c
     integration/liboqs/api.h
-    integration/liboqs/glue_rand.h
+    integration/liboqs/fips202_glue.h
+    integration/liboqs/fips202x4_glue.h
     src/commons.c
     src/commons.h
     src/ct_utils.c

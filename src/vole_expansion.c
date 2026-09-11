@@ -4,7 +4,10 @@
 #include "ggm.h"
 #include "sdith_prng.h"
 #include "vole_private.h"
+
+#ifndef USE_LIBOQS
 #include "KeccakSpongetimes4.h"
+#endif
 
 #ifndef NDEBUG
 #define MSTACK_DEF(bytelen)                              \
@@ -26,8 +29,11 @@
   stack_cur += bytelen
 #endif
 
+#ifndef USE_LIBOQS
+// owaldron: these don't appear to be used, so no added liboqs glue
 #define BATCH_XOF_STRIDE (((sizeof(KeccakWidth1600times4_SpongeInstance) + 31) / 32) * 32)
 #define BATCH_XOF(base, idx) ((KeccakWidth1600times4_SpongeInstance*)((uint8_t*)(base) + (idx) * BATCH_XOF_STRIDE))
+#endif 
 
 /** @brief converts delta0 to delta1
  * delta0 has kappa*tau bits, encoding tau grey code encodings

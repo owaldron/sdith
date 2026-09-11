@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <oqs/rand.h>
 
-#include "glue_rand.h"
 #include "sdith_signature.h"
 #include "api.h"
 
@@ -25,12 +25,14 @@ static void secure_zeroize(void* ptr, size_t len) {
 }
 
 OQS_STATUS crypto_sign_keypair(uint8_t* public_key, uint8_t* secret_key) {
+  // TODO:  is this necessary? It might get compiled-out 
   // safeguard
   if (CRYPTO_BYTES != sdith_signature_bytes(&SIGNATURE_PARAMS) ||
       CRYPTO_PUBLICKEYBYTES != sdith_public_key_bytes(&SIGNATURE_PARAMS) ||
       CRYPTO_SECRETKEYBYTES != sdith_secret_key_bytes(&SIGNATURE_PARAMS))
     return OQS_ERROR;
 
+  // owaldron TODO: pre-compute this, add a runtime check, and move the space to the stack
   uint64_t entropy_bytes = sdith_keygen_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_keygen_tmp_bytes(&SIGNATURE_PARAMS);
   uint8_t* entropy = malloc(entropy_bytes);
@@ -40,7 +42,7 @@ OQS_STATUS crypto_sign_keypair(uint8_t* public_key, uint8_t* secret_key) {
     free(entropy);
     return OQS_ERROR;
   }
-  randombytes(entropy, entropy_bytes);
+  OQS_randombytes(entropy, entropy_bytes);
   sdith_keygen(&SIGNATURE_PARAMS, secret_key, public_key, entropy, tmp_space);
   // tmp_space holds the raw solution, entropy holds the sk_seed: wipe both.
   secure_zeroize(tmp_space, tmp_bytes);
@@ -66,7 +68,7 @@ OQS_STATUS crypto_sign_sign(
     free(entropy);
     return OQS_ERROR;
   }
-  randombytes(entropy, entropy_bytes);
+  OQS_randombytes(entropy, entropy_bytes);
   sdith_sign(&SIGNATURE_PARAMS, signature, message, message_len, secret_key, entropy, tmp_space);
   *signature_len = CRYPTO_BYTES;
   // tmp_space and entropy hold secret signing state: wipe both.

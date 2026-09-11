@@ -5,8 +5,8 @@
 
 #ifdef USE_LIBOQS
 #include "aes128_ctrle.h"
-#include "KeccakHash.h"
-#include "KeccakHashtimes4.h"
+#include "fips202_glue.h"
+#include "fips202x4_glue.h"
 #else
 #include "../aes/aes128_ctrle.h"
 #include "../sha3/KeccakHash.h"
