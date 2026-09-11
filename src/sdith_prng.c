@@ -3,9 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef USE_LIBOQS
+#include "aes128_ctrle.h"
+#include "KeccakHash.h"
+#include "KeccakHashtimes4.h"
+#else
 #include "../aes/aes128_ctrle.h"
 #include "../sha3/KeccakHash.h"
 #include "../sha3/KeccakHashtimes4.h"
+#endif
+
 #include "rijndael256_ctrle.h"
 #include "sdith_prng_private.h"
 #include "vole_private.h"

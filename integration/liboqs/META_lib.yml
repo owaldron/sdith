@@ -1,0 +1,39 @@
+commons:
+  - name: sdith_lib
+    folder_name: .
+    sources: >-
+      lib/aes/aes128_ctrle.h
+      lib/aes/aes128_ctrle_special_ref.c
+      lib/aes/aes_ansi_littleendian_ref.c
+      lib/aes/aes_ansi_ref.c
+      lib/aes/aes_ansi_ref.h
+      lib/aes/rijndael256.c
+      lib/aes/rijndael256.h
+      lib/aes/rijndael256_ctrle.h
+      lib/aes/rijndael256_ctrle_special_ref.c
+      lib/sha3/KeccakHash.c
+      lib/sha3/KeccakHash.h
+      lib/sha3/KeccakHashtimes4.c
+      lib/sha3/KeccakHashtimes4.h
+      lib/sha3/KeccakSponge.c
+      lib/sha3/KeccakSponge.h
+      lib/sha3/KeccakSponge.inc
+      lib/sha3/KeccakSpongetimes4.c
+      lib/sha3/KeccakSpongetimes4.h
+      lib/sha3/KeccakSpongetimes4.inc
+      lib/sha3/SnP-Relaned.h
+      lib/sha3/align.h
+      lib/sha3/brg_endian.h
+      lib/sha3/config.h
+      lib/sha3/endian_compat.h
+      lib/sha3/macros.h
+      lib/sha3/opt64/KeccakP-1600-64.macros
+      lib/sha3/opt64/KeccakP-1600-SnP.h
+      lib/sha3/opt64/KeccakP-1600-opt64-config.h
+      lib/sha3/opt64/KeccakP-1600-opt64.c
+      lib/sha3/opt64/KeccakP-1600-times4-SnP.h
+      lib/sha3/opt64/KeccakP-1600-times4-on1.c
+      lib/sha3/opt64/KeccakP-1600-unrolling.macros
+      lib/sha3/opt64/PlSnP-Fallback.inc
+      lib/sha3/s390_cpacf.h
+    include_only: true

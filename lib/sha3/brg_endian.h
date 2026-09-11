@@ -1,7 +1,12 @@
 #ifndef _BRG_ENDIAN_H
 #define _BRG_ENDIAN_H
 
+#ifdef USE_LIBOQS
+// owaldron TODO remove. this is a hack
+#include "endian_compat.h"
+#else
 #include "../endian_compat.h"
+#endif
 
 #if defined(PICNIC_IS_LITTLE_ENDIAN)
 #define IS_LITTLE_ENDIAN 1
