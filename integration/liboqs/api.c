@@ -27,7 +27,7 @@ OQS_STATUS crypto_sign_keypair(uint8_t* public_key, uint8_t* secret_key) {
   // owaldron TODO: pre-compute this, add a runtime check, and move the space to the stack
   uint64_t entropy_bytes = sdith_keygen_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_keygen_tmp_bytes(&SIGNATURE_PARAMS);
-  printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes); // owaldron TODO: remove these debug prints
+  // printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes); // owaldron TODO: remove these debug prints
   uint8_t* entropy = malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
   uint8_t* tmp_space = malloc(tmp_bytes);
@@ -55,7 +55,7 @@ OQS_STATUS crypto_sign_sign(
   uint64_t entropy_bytes = sdith_signature_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_signature_tmp_bytes(&SIGNATURE_PARAMS);
   // owaldron TODO: remove these debug prints
-  printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes);
+  // printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes);
   uint8_t* entropy = malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
   uint8_t* tmp_space = malloc(tmp_bytes);
@@ -85,7 +85,7 @@ OQS_STATUS crypto_sign_verify(
   uint64_t tmp_bytes = sdith_verify_tmp_bytes(&SIGNATURE_PARAMS);
   uint8_t* tmp_space = malloc(tmp_bytes);
   // owaldron TODO: remove these debug prints
-  printf("tmp_bytes: %lu\n", tmp_bytes);
+  // printf("tmp_bytes: %lu\n", tmp_bytes);
   if (tmp_space == NULL) return OQS_ERROR;
   uint8_t res = sdith_verify(
     &SIGNATURE_PARAMS,
