@@ -6,16 +6,8 @@
 #include "sdith_signature.h"
 #include "api.h"
 
-// owaldron TODO fix this - it is temporary data specific to SDitH3-L1-gf2-short
-
-//  Set these three values apropriately for your algorithm
-#define CRYPTO_SECRETKEYBYTES 147
-#define CRYPTO_PUBLICKEYBYTES 70
-#define CRYPTO_BYTES 3721
-
-// Change the algorithm name
-#define CRYPTO_ALGNAME "SDiTH_CAT1_SHORT"
-#define SIGNATURE_PARAMS CAT1_SHORT_PARAMETERS
+// Scheme parameters should be defined in the build system, e.g. -DSIGNATURE_PARAMS=sdith3_l1_gf2_fast_params
+#include "check_params.h"
 
 // Zeroize secret scratch before free. The write goes through a volatile pointer
 // so the compiler cannot drop it as a dead store ahead of free().
@@ -35,6 +27,7 @@ OQS_STATUS crypto_sign_keypair(uint8_t* public_key, uint8_t* secret_key) {
   // owaldron TODO: pre-compute this, add a runtime check, and move the space to the stack
   uint64_t entropy_bytes = sdith_keygen_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_keygen_tmp_bytes(&SIGNATURE_PARAMS);
+  printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes); // owaldron TODO: remove these debug prints
   uint8_t* entropy = malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
   uint8_t* tmp_space = malloc(tmp_bytes);
@@ -61,6 +54,8 @@ OQS_STATUS crypto_sign_sign(
 {
   uint64_t entropy_bytes = sdith_signature_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_signature_tmp_bytes(&SIGNATURE_PARAMS);
+  // owaldron TODO: remove these debug prints
+  printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes);
   uint8_t* entropy = malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
   uint8_t* tmp_space = malloc(tmp_bytes);
@@ -89,6 +84,8 @@ OQS_STATUS crypto_sign_verify(
   if (signature_len != CRYPTO_BYTES) return OQS_ERROR;
   uint64_t tmp_bytes = sdith_verify_tmp_bytes(&SIGNATURE_PARAMS);
   uint8_t* tmp_space = malloc(tmp_bytes);
+  // owaldron TODO: remove these debug prints
+  printf("tmp_bytes: %lu\n", tmp_bytes);
   if (tmp_space == NULL) return OQS_ERROR;
   uint8_t res = sdith_verify(
     &SIGNATURE_PARAMS,

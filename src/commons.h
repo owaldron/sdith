@@ -15,6 +15,32 @@
 #define CPU_SUPPORTS(feature) __builtin_cpu_supports(feature)
 #endif
 
+/* Namespacing with the appropriate prefix */
+/* Private API */
+#ifndef SDITH_NAMESPACE
+#ifdef APPLY_NAMESPACE
+#ifndef concat2
+#define _concat2(a, b) a ## b
+#define concat2(a, b) _concat2(a, b)
+#endif
+#define SDITH_NAMESPACE(s) concat2(APPLY_NAMESPACE, s)
+#else
+#define SDITH_NAMESPACE(s) s
+#endif
+#endif
+/* Public API */
+#ifndef SDITH_PUBLIC_API_NAMESPACE
+#ifdef APPLY_PUBLIC_API_NAMESPACE
+#ifndef concat2
+#define _concat2(a, b) a ## b
+#define concat2(a, b) _concat2(a, b)
+#endif
+#define SDITH_PUBLIC_API_NAMESPACE(s) concat2(APPLY_PUBLIC_API_NAMESPACE, s)
+#else
+#define SDITH_PUBLIC_API_NAMESPACE(s) s
+#endif
+#endif
+
 typedef void bitvec_t;   // vector of bits row major (dimensions provided at runtime)
 typedef void bitmat_t;   // matrix of bits row major (dimensions provided at runtime)
 typedef void flambda_t;  // at runtime, the size of a big fielf elem  is lam (i.e. lambda/8)

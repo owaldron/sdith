@@ -1,24 +1,31 @@
 #ifndef API_H
 #define API_H
 
+#include <stddef.h>
+
 // This header wraps the SDiTH signature API for use in liboqs
 
 #include "sdith_signature.h"
-#include <stddef.h>
+#include "commons.h"
 
 #include <oqs/common.h>
 
-#ifndef OQS_INTERGRATION_NAMESPACE_PREFIX
-#warning "OQS_INTERGRATION_NAMESPACE_PREFIX is not defined, default to no namespace"
-#define OQS_INTERGRATION_NAMESPACE_PREFIX
+/* Public API */
+#ifndef SDITH_PUBLIC_API_NAMESPACE
+#ifdef APPLY_PUBLIC_API_NAMESPACE
+#ifndef concat2
+#define _concat2(a, b) a ## b
+#define concat2(a, b) _concat2(a, b)
 #endif
-#define OQS_INTERGRATION_CONCAT_(lhs, rhs) lhs##rhs
-#define OQS_INTERGRATION_CONCAT(lhs, rhs) OQS_INTERGRATION_CONCAT_(lhs, rhs)
-#define OQS_INTERGRATION_NAMESPACE(name) OQS_INTERGRATION_CONCAT(OQS_INTERGRATION_NAMESPACE_PREFIX, name)
+#define SDITH_PUBLIC_API_NAMESPACE(s) concat2(APPLY_PUBLIC_API_NAMESPACE, s)
+#else
+#define SDITH_PUBLIC_API_NAMESPACE(s) s
+#endif
+#endif
 
-#define crypto_sign_keypair OQS_INTERGRATION_NAMESPACE(crypto_sign_keypair)
-#define crypto_sign_sign OQS_INTERGRATION_NAMESPACE(crypto_sign_sign)
-#define crypto_sign_verify OQS_INTERGRATION_NAMESPACE(crypto_sign_verify)
+#define crypto_sign_keypair SDITH_PUBLIC_API_NAMESPACE(crypto_sign_keypair)
+#define crypto_sign_sign SDITH_PUBLIC_API_NAMESPACE(crypto_sign_sign)
+#define crypto_sign_verify SDITH_PUBLIC_API_NAMESPACE(crypto_sign_verify)
 
 /**
  * Generates the public and private key

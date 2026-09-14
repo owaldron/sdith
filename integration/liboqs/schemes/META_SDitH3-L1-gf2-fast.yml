@@ -1,0 +1,38 @@
+# Copyright (c) The mldsa-native project authors
+# SPDX-License-Identifier: Apache-2.0 OR ISC OR MIT
+name: sdith3-l1-gf2-fast
+type: signature
+claimed-nist-level: 1
+claimed-security: IND-CPA # owaldron TODO
+length-public-key: 70
+length-secret-key: 147
+length-signature: 4914
+nistkat-sha256: 9a196e7fb32fbc93757dc2d8dc1924460eab66303c0c08aeb8b798fb8d8f8cf3 # owaldron TODO
+testvectors-sha256: 5f0d135c0f7fd43f3fb9727265fcd6ec3651eb8c67c04ea5f3d8dfa1d99740d2 # owaldron TODO
+principal-submitters:
+- Nicolas Gama # owaldron TODO
+auxiliary-submitters:
+- Dongze Yue # owaldron TODO
+implementations: # owaldron TODO add other archs
+- name: ref
+  version: round3
+  folder_name: .
+  common_dep: sdith_common
+  compile_opts: >-
+    -DUSE_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=sdith3_pubapi_l1_gf2_fast_
+    -DCRYPTO_SECRETKEYBYTES=147
+    -DCRYPTO_PUBLICKEYBYTES=70
+    -DCRYPTO_BYTES=4914
+    -DCRYPTO_ALGNAME="SDiTH_CAT1_FAST"
+    -DSIGNATURE_PARAMS=CAT1_FAST_PARAMETERS
+    -DSIZE_KEYGEN_ENTROPY_BYTES=32
+    -DSIZE_KEYGEN_TMP_BYTES=415
+    -DSIZE_SIGN_ENTROPY_BYTES=32
+    -DSIZE_SIGN_TMP_BYTES=339184
+    -DSIZE_VERIFY_TMP_BYTES=332768
+  signature_keypair: sdith3_pubapi_l1_gf2_fast_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: sdith3_pubapi_l1_gf2_fast_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: sdith3_pubapi_l1_gf2_fast_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+  
