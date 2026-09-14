@@ -2,11 +2,9 @@ commons:
   - name: sdith_lib
     folder_name: .
     sources: >-
+      integration/liboqs/aes_glue.h
       lib/aes/aes128_ctrle.h
       lib/aes/aes128_ctrle_special_ref.c
-      lib/aes/aes_ansi_littleendian_ref.c
-      lib/aes/aes_ansi_ref.c
-      lib/aes/aes_ansi_ref.h
       lib/aes/rijndael256.c
       lib/aes/rijndael256.h
       lib/aes/rijndael256_ctrle.h
