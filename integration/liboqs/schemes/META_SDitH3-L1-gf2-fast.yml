@@ -1,14 +1,11 @@
-# Copyright (c) The mldsa-native project authors
-# SPDX-License-Identifier: Apache-2.0 OR ISC OR MIT
-name: sdith3-l1-gf2-fast
+name: sdith3-l1-gf2-fast # owaldron TODO: license?
 type: signature
 claimed-nist-level: 1
 claimed-security: IND-CPA # owaldron TODO
 length-public-key: 70
 length-secret-key: 147
 length-signature: 4914
-nistkat-sha256: 9a196e7fb32fbc93757dc2d8dc1924460eab66303c0c08aeb8b798fb8d8f8cf3 # owaldron TODO
-testvectors-sha256: 5f0d135c0f7fd43f3fb9727265fcd6ec3651eb8c67c04ea5f3d8dfa1d99740d2 # owaldron TODO
+nistkat-sha256: 41ccb6bad2eefe684dca736393e8c29bec7f2f3672492df6cff17c84f333cc03
 principal-submitters:
 - Nicolas Gama # owaldron TODO
 auxiliary-submitters:
