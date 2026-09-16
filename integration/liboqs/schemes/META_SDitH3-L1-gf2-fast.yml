@@ -1,7 +1,7 @@
 name: sdith3-l1-gf2-fast # owaldron TODO: license?
 type: signature
 claimed-nist-level: 1
-claimed-security: IND-CPA # owaldron TODO
+claimed-security: EUF-CMA
 length-public-key: 70
 length-secret-key: 147
 length-signature: 4914
@@ -10,7 +10,7 @@ principal-submitters:
 - Nicolas Gama # owaldron TODO
 auxiliary-submitters:
 - Dongze Yue # owaldron TODO
-implementations: # owaldron TODO add other archs
+implementations:
 - name: ref
   version: round3
   folder_name: .
@@ -18,20 +18,19 @@ implementations: # owaldron TODO add other archs
   compile_opts: >-
     -DUSE_REFERENCE_CODE_ONLY
     -DUSE_LIBOQS
-    -DAPPLY_PUBLIC_API_NAMESPACE=sdith3_pubapi_l1_gf2_fast_
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70
     -DCRYPTO_BYTES=4914
-    -DCRYPTO_ALGNAME="SDiTH_CAT1_FAST"
     -DSIGNATURE_PARAMS=CAT1_FAST_PARAMETERS
     -DSIZE_KEYGEN_ENTROPY_BYTES=32
     -DSIZE_KEYGEN_TMP_BYTES=415
     -DSIZE_SIGN_ENTROPY_BYTES=32
     -DSIZE_SIGN_TMP_BYTES=339184
     -DSIZE_VERIFY_TMP_BYTES=332768
-  signature_keypair: sdith3_pubapi_l1_gf2_fast_crypto_sign_keypair # prefix + crypto_sign_keypair
-  signature_signature: sdith3_pubapi_l1_gf2_fast_crypto_sign_sign # prefix + crypto_sign_sign
-  signature_verify: sdith3_pubapi_l1_gf2_fast_crypto_sign_verify # prefix + crypto_sign_verify
+  signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_fast_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_fast_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_fast_crypto_sign_verify # prefix + crypto_sign_verify
   sources: ""
 - name: avx2
   version: round3
@@ -39,20 +38,19 @@ implementations: # owaldron TODO add other archs
   common_dep: sdith_common sdith_common_avx2
   compile_opts: >-
     -DUSE_LIBOQS
-    -DAPPLY_PUBLIC_API_NAMESPACE=sdith3_pubapi_l1_gf2_fast_avx2_
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70
     -DCRYPTO_BYTES=4914
-    -DCRYPTO_ALGNAME="SDiTH_CAT1_FAST"
     -DSIGNATURE_PARAMS=CAT1_FAST_PARAMETERS
     -DSIZE_KEYGEN_ENTROPY_BYTES=32
     -DSIZE_KEYGEN_TMP_BYTES=415
     -DSIZE_SIGN_ENTROPY_BYTES=32
     -DSIZE_SIGN_TMP_BYTES=339184
     -DSIZE_VERIFY_TMP_BYTES=332768
-  signature_keypair: sdith3_pubapi_l1_gf2_fast_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
-  signature_signature: sdith3_pubapi_l1_gf2_fast_avx2_crypto_sign_sign # prefix + crypto_sign_sign
-  signature_verify: sdith3_pubapi_l1_gf2_fast_avx2_crypto_sign_verify # prefix + crypto_sign_verify
+  signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_crypto_sign_verify # prefix + crypto_sign_verify
   sources: ""
   supported_platforms:
     - architecture: x86_64

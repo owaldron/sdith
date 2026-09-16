@@ -7,9 +7,6 @@
 #ifndef CRYPTO_BYTES
 #error "CRYPTO_BYTES must be defined before including this file"
 #endif
-#ifndef CRYPTO_ALGNAME
-#error "CRYPTO_ALGNAME must be defined before including this file"
-#endif
 #ifndef SIGNATURE_PARAMS
 #error "SIGNATURE_PARAMS must be defined before including this file"
 #endif
