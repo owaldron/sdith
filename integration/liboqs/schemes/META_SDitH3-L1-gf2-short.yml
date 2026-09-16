@@ -32,4 +32,34 @@ implementations: # owaldron TODO add other archs
   signature_signature: sdith3_pubapi_l1_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: sdith3_pubapi_l1_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify
   sources: ""
-  
+- name: avx2
+  version: round3
+  folder_name: .
+  common_dep: sdith_common sdith_common_avx2
+  compile_opts: >-
+    -DUSE_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=sdith3_pubapi_l1_gf2_short_
+    -DCRYPTO_SECRETKEYBYTES=147
+    -DCRYPTO_PUBLICKEYBYTES=70
+    -DCRYPTO_BYTES=3721
+    -DCRYPTO_ALGNAME="SDiTH_CAT1_SHORT"
+    -DSIGNATURE_PARAMS=CAT1_SHORT_PARAMETERS
+    -DSIZE_KEYGEN_ENTROPY_BYTES=32
+    -DSIZE_KEYGEN_TMP_BYTES=415
+    -DSIZE_SIGN_ENTROPY_BYTES=32
+    -DSIZE_SIGN_TMP_BYTES=979848
+    -DSIZE_VERIFY_TMP_BYTES=973424
+  signature_keypair: sdith3_pubapi_l1_gf2_short_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: sdith3_pubapi_l1_gf2_short_avx2_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: sdith3_pubapi_l1_gf2_short_avx2_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+  supported_platforms:
+    - architecture: x86_64
+      operating_systems:
+        - Linux 
+        # - Darwin # TODO: needs small upstream build patches for support. As of writing, all x86 builds assume x86_LINUX. Darwin is missing a glibc header file for `__always_inline`
+      required_flags:
+        - avx2
+        - avx
+        - aes
+        - pclmulqdq

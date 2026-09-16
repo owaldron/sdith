@@ -1,7 +1,7 @@
 commons:
   - name: sdith_common
     folder_name: .
-    sources: >-
+    sources: >- #aes128_ctrle_special_ref.c is excluded and liboqs AES is used instead
       integration/liboqs/api.c
       integration/liboqs/api.h
       integration/liboqs/check_params.h
@@ -45,3 +45,28 @@ commons:
       src/vole_private.h
       src/vole_to_piop.c
     include_only: true
+  - name: sdith_common_avx2
+    folder_name: .
+    sources: >- # aes128_ctrle_special_avx2.c is intentionally included and isn't shimmed, since it offers improvements over liboqs AES
+      lib/aes/rijndael256_avx.c
+      lib/aes/rijndael256_avx.h
+      lib/aes/aes128_ctrle_special_avx2.c
+      lib/aes/rijndael256_ctrle_special_avx2.c
+      src/ct_utils_avx2.c
+      src/gf128_avx2.c
+      src/gf192_avx2.c
+      src/gf256_avx2.c
+      src/matrix_vector_products_f2_avx2.c
+      src/sdith_prng_avx2.c
+      src/vole_parameters_avx2.c
+    include_only: true
+    supported_platforms:
+      - architecture: x86_64
+        operating_systems:
+          # - Darwin # TODO: needs small upstream build patches for support. As of writing, all x86 SDitH builds assume x86_LINUX. Darwin is missing a glibc header file for `__always_inline`
+          - Linux
+        required_flags:
+          - avx2
+          - avx
+          - aes
+          - pclmulqdq
