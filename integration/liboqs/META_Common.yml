@@ -7,9 +7,7 @@ commons:
       integration/liboqs/check_params.h
       integration/liboqs/fips202_glue.h
       integration/liboqs/fips202x4_glue.h
-      lib/aes/aes_ansi_littleendian_ref.c
-      lib/aes/aes_ansi_ref.c
-      lib/aes/aes_ansi_ref.h
+      integration/liboqs/aes_glue.h
       lib/aes/aes128_ctrle.h
       lib/aes/aes128_ctrle_special_ref.c
       lib/aes/rijndael256.c
