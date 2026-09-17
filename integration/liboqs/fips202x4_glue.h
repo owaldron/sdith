@@ -56,22 +56,19 @@ static inline void KeccakWidth1600_SpongeAbsorbLastFewBits(KeccakWidth1600_Spong
   }
 }
 
-// Squeezes, then releases: only valid because each sponge is squeezed exactly once
 static inline void KeccakWidth1600_SpongeSqueeze(KeccakWidth1600_SpongeInstance* inst, unsigned char* data,
                                                  size_t dataByteLen) {
   if (inst->shake == 128) {
     OQS_SHA3_shake128_inc_squeeze(data, dataByteLen, &inst->shake128_state);
-    OQS_SHA3_shake128_inc_ctx_release(&inst->shake128_state);
   } else {
     OQS_SHA3_shake256_inc_squeeze(data, dataByteLen, &inst->shake256_state);
-    OQS_SHA3_shake256_inc_ctx_release(&inst->shake256_state);
   }
 }
 
 static inline void KeccakWidth1600times4_SpongeInitialize(KeccakWidth1600times4_SpongeInstance* inst,
                                                           unsigned int rate, unsigned int capacity) {
   (void)rate;  // implied by capacity
-  inst->shake = capacity / 2;
+  inst->shake = capacity / 2; // SHAKE128 has capacity 256 and SHAKE256 has capacity 512
   if (inst->shake == 128) {
     assert(rate == (OQS_SHA3_SHAKE128_RATE << 3));  // XKCP in bits, liboqs in bytes
     OQS_SHA3_shake128_x4_inc_init(&inst->shake128_state);
@@ -100,16 +97,12 @@ static inline void KeccakWidth1600times4_SpongeAbsorbLastFewBits(KeccakWidth1600
   }
 }
 
-// Squeezes, then releases: only valid because each sponge is squeezed exactly once
-// owaldron TODO: is there a better system for releasing?
 static inline void KeccakWidth1600times4_SpongeSqueeze(KeccakWidth1600times4_SpongeInstance* inst,
                                                        unsigned char** data, size_t dataByteLen) {
   if (inst->shake == 128) {
     OQS_SHA3_shake128_x4_inc_squeeze(data[0], data[1], data[2], data[3], dataByteLen, &inst->shake128_state);
-    OQS_SHA3_shake128_x4_inc_ctx_release(&inst->shake128_state);
   } else {
     OQS_SHA3_shake256_x4_inc_squeeze(data[0], data[1], data[2], data[3], dataByteLen, &inst->shake256_state);
-    OQS_SHA3_shake256_x4_inc_ctx_release(&inst->shake256_state);
   }
 }
 
