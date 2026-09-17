@@ -1,6 +1,6 @@
 name: sdith3-l3-gf2-short # owaldron TODO: license?
 type: signature
-claimed-nist-level: 1
+claimed-nist-level: 3
 claimed-security: EUF-CMA
 length-public-key: 98
 length-secret-key: 208
@@ -23,11 +23,11 @@ implementations:
     -DCRYPTO_PUBLICKEYBYTES=98
     -DCRYPTO_BYTES=8484
     -DSIGNATURE_PARAMS=CAT3_SHORT_PARAMETERS
-    -DSIZE_KEYGEN_ENTROPY_BYTES=32
-    -DSIZE_KEYGEN_TMP_BYTES=415
-    -DSIZE_SIGN_ENTROPY_BYTES=32
-    -DSIZE_SIGN_TMP_BYTES=979848
-    -DSIZE_VERIFY_TMP_BYTES=973424
+    -DSIZE_KEYGEN_ENTROPY_BYTES=0
+    -DSIZE_KEYGEN_TMP_BYTES=0
+    -DSIZE_SIGN_ENTROPY_BYTES=0
+    -DSIZE_SIGN_TMP_BYTES=0
+    -DSIZE_VERIFY_TMP_BYTES=0
   signature_keypair: oqs_sig_pubapi_sdith3_l3_gf2_short_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l3_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l3_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify

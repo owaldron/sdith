@@ -1,6 +1,6 @@
 name: sdith3-l3-gf2-fast-cipherpow # owaldron TODO: license?
 type: signature
-claimed-nist-level: 1
+claimed-nist-level: 3
 claimed-security: EUF-CMA
 length-public-key: 98
 length-secret-key: 208

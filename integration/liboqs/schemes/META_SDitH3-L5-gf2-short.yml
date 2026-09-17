@@ -1,0 +1,64 @@
+name: sdith3-l5-gf2-short # owaldron TODO: license?
+type: signature
+claimed-nist-level: 5
+claimed-security: EUF-CMA
+length-public-key: 132
+length-secret-key: 275
+length-signature: 15147
+nistkat-sha256: e37006ef04589adff3fb96948e35e370e4540d10bbf4a4c6c22eff83c8942062
+principal-submitters:
+- Nicolas Gama # owaldron TODO
+auxiliary-submitters:
+- Dongze Yue # owaldron TODO
+implementations:
+- name: ref
+  version: round3
+  folder_name: .
+  common_dep: sdith_common
+  compile_opts: >-
+    -DUSE_REFERENCE_CODE_ONLY
+    -DUSE_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l5_gf2_short_
+    -DCRYPTO_SECRETKEYBYTES=275
+    -DCRYPTO_PUBLICKEYBYTES=132
+    -DCRYPTO_BYTES=15147
+    -DSIGNATURE_PARAMS=CAT5_SHORT_PARAMETERS
+    -DSIZE_KEYGEN_ENTROPY_BYTES=32
+    -DSIZE_KEYGEN_TMP_BYTES=415
+    -DSIZE_SIGN_ENTROPY_BYTES=32
+    -DSIZE_SIGN_TMP_BYTES=979848
+    -DSIZE_VERIFY_TMP_BYTES=973424
+  signature_keypair: oqs_sig_pubapi_sdith3_l5_gf2_short_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l5_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l5_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+- name: avx2
+  version: round3
+  folder_name: .
+  common_dep: sdith_common sdith_common_avx2
+  compile_opts: >-
+    -DUSE_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l5_gf2_short_avx2_
+    -DCRYPTO_SECRETKEYBYTES=275
+    -DCRYPTO_PUBLICKEYBYTES=132
+    -DCRYPTO_BYTES=15147
+    -DSIGNATURE_PARAMS=CAT5_SHORT_PARAMETERS
+    -DSIZE_KEYGEN_ENTROPY_BYTES=0
+    -DSIZE_KEYGEN_TMP_BYTES=0
+    -DSIZE_SIGN_ENTROPY_BYTES=0
+    -DSIZE_SIGN_TMP_BYTES=0
+    -DSIZE_VERIFY_TMP_BYTES=0
+  signature_keypair: oqs_sig_pubapi_sdith3_l5_gf2_short_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l5_gf2_short_avx2_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l5_gf2_short_avx2_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+  supported_platforms:
+    - architecture: x86_64
+      operating_systems:
+        - Linux
+        # - Darwin # TODO: needs small upstream build patches for support. As of writing, all x86 builds assume x86_LINUX. Darwin is missing a glibc header file for `__always_inline`
+      required_flags:
+        - avx2
+        - avx
+        - aes
+        - pclmulqdq
