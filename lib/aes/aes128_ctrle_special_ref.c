@@ -2,7 +2,7 @@
 
 #include "aes128_ctrle.h"
 
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
 #include "aes_ansi_ref.h"
 #else
 #include "aes_glue.h"
@@ -37,7 +37,7 @@ static inline void aes128_nocarry_ref_impl(void* out, const void* round_keys, co
   ctr128_t ctr;
   uint8_t* oo = (uint8_t*)out;
   memcpy(ctr.v8, ctr_block, 16);
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
   /* reference implementation */
   for (uint64_t i = 0; i < nblocks; ++i) {
     aes128_encrypt_1block_ref(oo + 16 * i, ctr.v8, round_keys);

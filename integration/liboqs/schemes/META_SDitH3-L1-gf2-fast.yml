@@ -17,7 +17,7 @@ implementations:
   common_dep: sdith_common
   compile_opts: >-
     -DUSE_REFERENCE_CODE_ONLY
-    -DUSE_LIBOQS
+    -DSDITH3_FOR_LIBOQS
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70
@@ -32,7 +32,7 @@ implementations:
   folder_name: .
   common_dep: sdith_common sdith_common_avx2
   compile_opts: >-
-    -DUSE_LIBOQS
+    -DSDITH3_FOR_LIBOQS
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70

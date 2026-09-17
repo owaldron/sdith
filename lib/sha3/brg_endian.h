@@ -1,7 +1,7 @@
 #ifndef _BRG_ENDIAN_H
 #define _BRG_ENDIAN_H
 
-#ifdef USE_LIBOQS
+#ifdef SDITH3_FOR_LIBOQS
 // owaldron TODO remove. this is a hack
 #include "endian_compat.h"
 #else

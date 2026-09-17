@@ -3,7 +3,7 @@
 
 #include "commons.h"
 
-#ifdef USE_LIBOQS
+#ifdef SDITH3_FOR_LIBOQS
 #include <oqs/sha3_ops.h>
 #endif
 
@@ -264,7 +264,7 @@ EXPORT void vole_rng_ext_cat5_rijndael256_ctrle_avx2(void* out, uint64_t out_byt
                                                      const void* extseed, uint64_t repet_idx);
 
 
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
 typedef struct xof_ctx_t {
   uint64_t DUMMY[224 / 8];
 } xof_ctx;

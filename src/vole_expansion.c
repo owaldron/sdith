@@ -5,7 +5,7 @@
 #include "sdith_prng.h"
 #include "vole_private.h"
 
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
 #include "KeccakSpongetimes4.h"
 #endif
 
@@ -29,7 +29,7 @@
   stack_cur += bytelen
 #endif
 
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
 // owaldron: these don't appear to be used here at all, so no corresponding liboqs implimentaion is added
 #define BATCH_XOF_STRIDE (((sizeof(KeccakWidth1600times4_SpongeInstance) + 31) / 32) * 32)
 #define BATCH_XOF(base, idx) ((KeccakWidth1600times4_SpongeInstance*)((uint8_t*)(base) + (idx) * BATCH_XOF_STRIDE))

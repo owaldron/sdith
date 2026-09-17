@@ -6,7 +6,7 @@
 #include "sdith_prng_private.h"
 #include "vole_private.h"
 
-#ifndef USE_LIBOQS
+#ifndef SDITH3_FOR_LIBOQS
 #include "aes_ansi_ref.h"
 #else
 #include "aes_glue.h"

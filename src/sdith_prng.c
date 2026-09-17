@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef USE_LIBOQS
+#ifdef SDITH3_FOR_LIBOQS
 #include "aes128_ctrle.h"
 #include "fips202_glue.h"
 #include "fips202x4_glue.h"
@@ -220,14 +220,14 @@ EXPORT void xof_finalize_and_output_shake256(xof_ctx* xof, void* out, uint64_t o
 }
 
 EXPORT void xof_ctx_release_shake128(xof_ctx* xof) {
-  #ifndef USE_LIBOQS
+  #ifndef SDITH3_FOR_LIBOQS
   (void)xof;  // no-op
   #else
   OQS_SHA3_shake128_inc_ctx_release(&xof->shake128_state);
   #endif
 }
 EXPORT void xof_ctx_release_shake256(xof_ctx* xof) {
-  #ifndef USE_LIBOQS
+  #ifndef SDITH3_FOR_LIBOQS
   (void)xof;  // no-op
   #else
   OQS_SHA3_shake256_inc_ctx_release(&xof->shake256_state);
@@ -339,7 +339,7 @@ EXPORT void xof_vector_finalize_and_output_shake256(xof_vector_ctx* xof, uint64_
 }
 
 EXPORT void xof_vector_ctx_release_shake128(xof_vector_ctx* xof, uint64_t num_xofs) {
-  #ifndef USE_LIBOQS
+  #ifndef SDITH3_FOR_LIBOQS
   (void)xof;  // no-op
   (void)num_xofs;  // no-op
   #else
@@ -357,7 +357,7 @@ EXPORT void xof_vector_ctx_release_shake128(xof_vector_ctx* xof, uint64_t num_xo
   #endif
 }
 EXPORT void xof_vector_ctx_release_shake256(xof_vector_ctx* xof, uint64_t num_xofs) {
-  #ifndef USE_LIBOQS
+  #ifndef SDITH3_FOR_LIBOQS
   (void)xof;  // no-op
   (void)num_xofs;  // no-op
   #else
