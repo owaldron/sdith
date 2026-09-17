@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <oqs/rand.h>
+#include <oqs/common.h>
 
 #include "sdith_signature.h"
 #include "api.h"
@@ -9,39 +10,29 @@
 // Scheme parameters should be defined in the build system, e.g. -DSIGNATURE_PARAMS=sdith3_l1_gf2_fast_params
 #include "check_params.h"
 
-// Zeroize secret scratch before free. The write goes through a volatile pointer
-// so the compiler cannot drop it as a dead store ahead of free().
-static void secure_zeroize(void* ptr, size_t len) {
-  volatile unsigned char* p = (volatile unsigned char*)ptr;
-  while (len--) *p++ = 0;
-}
 
 OQS_STATUS crypto_sign_keypair(uint8_t* public_key, uint8_t* secret_key) {
-  // TODO:  is this necessary? It might get compiled-out 
-  // safeguard
   if (CRYPTO_BYTES != sdith_signature_bytes(&SIGNATURE_PARAMS) ||
       CRYPTO_PUBLICKEYBYTES != sdith_public_key_bytes(&SIGNATURE_PARAMS) ||
       CRYPTO_SECRETKEYBYTES != sdith_secret_key_bytes(&SIGNATURE_PARAMS))
     return OQS_ERROR;
 
-  // owaldron TODO: pre-compute this, add a runtime check, and move the space to the stack
   uint64_t entropy_bytes = sdith_keygen_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_keygen_tmp_bytes(&SIGNATURE_PARAMS);
-  // printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes); // owaldron TODO: remove these debug prints
-  uint8_t* entropy = malloc(entropy_bytes);
+  uint8_t* entropy = OQS_MEM_malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
-  uint8_t* tmp_space = malloc(tmp_bytes);
+  uint8_t* tmp_space = OQS_MEM_malloc(tmp_bytes);
   if (tmp_space == NULL) {
-    free(entropy);
+    OQS_MEM_insecure_free(entropy);
     return OQS_ERROR;
   }
+
   OQS_randombytes(entropy, entropy_bytes);
   sdith_keygen(&SIGNATURE_PARAMS, secret_key, public_key, entropy, tmp_space);
+
   // tmp_space holds the raw solution, entropy holds the sk_seed: wipe both.
-  secure_zeroize(tmp_space, tmp_bytes);
-  secure_zeroize(entropy, entropy_bytes);
-  free(tmp_space);
-  free(entropy);
+  OQS_MEM_secure_free(tmp_space, tmp_bytes);
+  OQS_MEM_secure_free(entropy, entropy_bytes);
   return OQS_SUCCESS;
 }
 
@@ -54,23 +45,21 @@ OQS_STATUS crypto_sign_sign(
 {
   uint64_t entropy_bytes = sdith_signature_entropy_bytes(&SIGNATURE_PARAMS);
   uint64_t tmp_bytes = sdith_signature_tmp_bytes(&SIGNATURE_PARAMS);
-  // owaldron TODO: remove these debug prints
-  // printf("entropy_bytes: %lu, tmp_bytes: %lu\n", entropy_bytes, tmp_bytes);
-  uint8_t* entropy = malloc(entropy_bytes);
+  uint8_t* entropy = OQS_MEM_malloc(entropy_bytes);
   if (entropy == NULL) return OQS_ERROR;
-  uint8_t* tmp_space = malloc(tmp_bytes);
+  uint8_t* tmp_space = OQS_MEM_malloc(tmp_bytes);
   if (tmp_space == NULL) {
-    free(entropy);
+    OQS_MEM_insecure_free(entropy);
     return OQS_ERROR;
   }
+
   OQS_randombytes(entropy, entropy_bytes);
   sdith_sign(&SIGNATURE_PARAMS, signature, message, message_len, secret_key, entropy, tmp_space);
   *signature_len = CRYPTO_BYTES;
+
   // tmp_space and entropy hold secret signing state: wipe both.
-  secure_zeroize(tmp_space, tmp_bytes);
-  secure_zeroize(entropy, entropy_bytes);
-  free(tmp_space);
-  free(entropy);
+  OQS_MEM_secure_free(tmp_space, tmp_bytes);
+  OQS_MEM_secure_free(entropy, entropy_bytes);
   return OQS_SUCCESS;
 }
 
@@ -83,10 +72,9 @@ OQS_STATUS crypto_sign_verify(
 ) {
   if (signature_len != CRYPTO_BYTES) return OQS_ERROR;
   uint64_t tmp_bytes = sdith_verify_tmp_bytes(&SIGNATURE_PARAMS);
-  uint8_t* tmp_space = malloc(tmp_bytes);
-  // owaldron TODO: remove these debug prints
-  // printf("tmp_bytes: %lu\n", tmp_bytes);
+  uint8_t* tmp_space = OQS_MEM_malloc(tmp_bytes);
   if (tmp_space == NULL) return OQS_ERROR;
+
   uint8_t res = sdith_verify(
     &SIGNATURE_PARAMS,
     signature,
@@ -95,6 +83,7 @@ OQS_STATUS crypto_sign_verify(
     public_key,
     tmp_space
   );
-  free(tmp_space); // Touches only public data
+
+  OQS_MEM_secure_free(tmp_space, tmp_bytes); // Touches only public data
   return res ? OQS_SUCCESS : OQS_ERROR;
 }

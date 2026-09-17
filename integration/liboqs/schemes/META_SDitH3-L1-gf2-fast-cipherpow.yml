@@ -23,11 +23,6 @@ implementations:
     -DCRYPTO_PUBLICKEYBYTES=70
     -DCRYPTO_BYTES=4643
     -DSIGNATURE_PARAMS=CAT1_FAST_CIPHERPOW_PARAMETERS
-    -DSIZE_KEYGEN_ENTROPY_BYTES=0
-    -DSIZE_KEYGEN_TMP_BYTES=0
-    -DSIZE_SIGN_ENTROPY_BYTES=0
-    -DSIZE_SIGN_TMP_BYTES=0
-    -DSIZE_VERIFY_TMP_BYTES=0
   signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_crypto_sign_verify # prefix + crypto_sign_verify
@@ -43,11 +38,6 @@ implementations:
     -DCRYPTO_PUBLICKEYBYTES=70
     -DCRYPTO_BYTES=4643
     -DSIGNATURE_PARAMS=CAT1_FAST_CIPHERPOW_PARAMETERS
-    -DSIZE_KEYGEN_ENTROPY_BYTES=0
-    -DSIZE_KEYGEN_TMP_BYTES=0
-    -DSIZE_SIGN_ENTROPY_BYTES=0
-    -DSIZE_SIGN_TMP_BYTES=0
-    -DSIZE_VERIFY_TMP_BYTES=0
   signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_avx2_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_avx2_crypto_sign_verify # prefix + crypto_sign_verify
