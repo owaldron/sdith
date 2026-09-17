@@ -264,6 +264,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&hash_aux_ctx, hash_com, 2 * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&hash_aux_ctx, corr_u, (par.tau - 1) * par.Lbyte);
     par.vole_params.xof.xof_finalize_and_output(&hash_aux_ctx, hash_aux, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&hash_aux_ctx);
 
     double t4 = get_time();
     uint8_t* const rvp_u_cchk = u;
@@ -307,6 +308,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&hash_lines_ctx, cchk_res_v, par.cchk_matrix_nrows * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&hash_lines_ctx, circuit_in_pub, (par.num_inputs_pairs + 7) >> 3);
     par.vole_params.xof.xof_finalize_and_output(&hash_lines_ctx, hash_lines, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&hash_lines_ctx);
 
     const double t101 = get_time();
     //  generate the challenge points
@@ -314,6 +316,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_init_and_seed(&chall_rng, hash_lines, 2 * par.lambda_bytes);
     par.vole_params.xof.xof_finalize_and_output(&chall_rng, chall_a, par.lambda_bytes * par.rsd_codim_limbs);
     par.vole_params.xof.xof_output(&chall_rng, chall_unitary, par.lambda_bytes * par.rsd_w);
+    par.vole_params.xof.xof_ctx_release(&chall_rng);
     const double t102 = get_time();
     rsd_public_key_times_challenge_ref(                         //
         &par.vole_params, par.rsd_w, par.rsd_n, par.rsd_codim,  //
@@ -369,6 +372,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&hash_piop_ctx, cz_pub_full, par.degree * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&hash_piop_ctx, message, message_bytes);
     par.vole_params.xof.xof_finalize_and_output(&hash_piop_ctx, hash_piop, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&hash_piop_ctx);
 
     const double t200 = get_time();
 
@@ -484,6 +488,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&verif_hash_aux_ctx, hash_com, 2 * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&verif_hash_aux_ctx, corr_u, (par.tau - 1) * par.Lbyte);
     par.vole_params.xof.xof_finalize_and_output(&verif_hash_aux_ctx, verif_hash_aux, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&verif_hash_aux_ctx);
     REQUIRE_DRAMATICALLY(memcmp(verif_hash_aux, hash_aux, 2 * par.lambda_bytes) == 0, "bug!!");
 
     double verif_paranoia_checks_time = 0.;
@@ -577,6 +582,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&verif_hash_lines_ctx, verif_cchk_res_v, par.cchk_matrix_nrows * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&verif_hash_lines_ctx, circuit_in_pub, (par.num_inputs_pairs + 7) >> 3);
     par.vole_params.xof.xof_finalize_and_output(&verif_hash_lines_ctx, verif_hash_lines, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&verif_hash_lines_ctx);
     REQUIRE_DRAMATICALLY(memcmp(verif_hash_lines, hash_lines, 2 * par.lambda_bytes) == 0, "bug!!");
 
     const double vt5 = get_time();
@@ -649,6 +655,7 @@ int main(int argc, char** argv) {
                                                 par.lambda_bytes * par.rsd_codim_limbs);
     // note: the chall unitary are only needed if the mux tree contains one non-binary arity
     par.vole_params.xof.xof_output(&verif_chall_rng, verif_chall_unitary, par.lambda_bytes * par.rsd_w);
+    par.vole_params.xof.xof_ctx_release(&verif_chall_rng);
     const double vt102 = get_time();
 
     std::vector<uint8_t> vtmpsp(
@@ -732,6 +739,7 @@ int main(int argc, char** argv) {
     par.vole_params.xof.xof_seed(&verif_hash_piop_ctx, cz_pub_full, par.degree * par.lambda_bytes);
     par.vole_params.xof.xof_seed(&verif_hash_piop_ctx, message, message_bytes);
     par.vole_params.xof.xof_finalize_and_output(&verif_hash_piop_ctx, verif_hash_piop, 2 * par.lambda_bytes);
+    par.vole_params.xof.xof_ctx_release(&verif_hash_piop_ctx);
     REQUIRE_DRAMATICALLY(memcmp(verif_hash_piop, hash_piop, 2 * par.lambda_bytes) == 0, "bug!!");
 
     const double vt200 = get_time();
