@@ -1,0 +1,54 @@
+name: sdith3-l1-gf2-short # owaldron TODO: license?
+type: signature
+claimed-nist-level: 1
+claimed-security: EUF-CMA
+length-public-key: 70
+length-secret-key: 147
+length-signature: 3721
+nistkat-sha256: d50d495fd8a0f2cb0463fcd3aef1398cf84b94bf0aff0fd69b5a1026b47e2047 # owaldron TODO
+principal-submitters:
+- Nicolas Gama # owaldron TODO
+auxiliary-submitters:
+- Dongze Yue # owaldron TODO
+implementations:
+- name: ref
+  version: round3
+  folder_name: .
+  common_dep: sdith_common
+  compile_opts: >-
+    -DUSE_REFERENCE_CODE_ONLY
+    -DSDITH3_FOR_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_short_
+    -DCRYPTO_SECRETKEYBYTES=147
+    -DCRYPTO_PUBLICKEYBYTES=70
+    -DCRYPTO_BYTES=3721
+    -DSIGNATURE_PARAMS=CAT1_SHORT_PARAMETERS
+  signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+- name: avx2
+  version: round3
+  folder_name: .
+  common_dep: sdith_common sdith_common_avx2
+  compile_opts: >-
+    -DSDITH3_FOR_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_
+    -DCRYPTO_SECRETKEYBYTES=147
+    -DCRYPTO_PUBLICKEYBYTES=70
+    -DCRYPTO_BYTES=3721
+    -DSIGNATURE_PARAMS=CAT1_SHORT_PARAMETERS
+  signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+  supported_platforms:
+    - architecture: x86_64
+      operating_systems:
+        - Linux
+        # - Darwin # TODO: needs small upstream build patches for support. As of writing, all x86 builds assume x86_LINUX. Darwin is missing a glibc header file for `__always_inline`
+      required_flags:
+        - avx2
+        - avx
+        - aes
+        - pclmulqdq

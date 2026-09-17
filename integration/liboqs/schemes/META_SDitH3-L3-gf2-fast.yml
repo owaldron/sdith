@@ -1,0 +1,54 @@
+name: sdith3-l3-gf2-fast # owaldron TODO: license?
+type: signature
+claimed-nist-level: 3
+claimed-security: EUF-CMA
+length-public-key: 98
+length-secret-key: 208
+length-signature: 10852
+nistkat-sha256: b4778b069b8c58c803cb8bc8e3d4557c67e0ec5555a6ba2e82186beb0fdb1309
+principal-submitters:
+- Nicolas Gama # owaldron TODO
+auxiliary-submitters:
+- Dongze Yue # owaldron TODO
+implementations:
+- name: ref
+  version: round3
+  folder_name: .
+  common_dep: sdith_common
+  compile_opts: >-
+    -DUSE_REFERENCE_CODE_ONLY
+    -DSDITH3_FOR_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l3_gf2_fast_
+    -DCRYPTO_SECRETKEYBYTES=208
+    -DCRYPTO_PUBLICKEYBYTES=98
+    -DCRYPTO_BYTES=10852
+    -DSIGNATURE_PARAMS=CAT3_FAST_PARAMETERS
+  signature_keypair: oqs_sig_pubapi_sdith3_l3_gf2_fast_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l3_gf2_fast_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l3_gf2_fast_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+- name: avx2
+  version: round3
+  folder_name: .
+  common_dep: sdith_common sdith_common_avx2
+  compile_opts: >-
+    -DSDITH3_FOR_LIBOQS
+    -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l3_gf2_fast_avx2_
+    -DCRYPTO_SECRETKEYBYTES=208
+    -DCRYPTO_PUBLICKEYBYTES=98
+    -DCRYPTO_BYTES=10852
+    -DSIGNATURE_PARAMS=CAT3_FAST_PARAMETERS
+  signature_keypair: oqs_sig_pubapi_sdith3_l3_gf2_fast_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
+  signature_signature: oqs_sig_pubapi_sdith3_l3_gf2_fast_avx2_crypto_sign_sign # prefix + crypto_sign_sign
+  signature_verify: oqs_sig_pubapi_sdith3_l3_gf2_fast_avx2_crypto_sign_verify # prefix + crypto_sign_verify
+  sources: ""
+  supported_platforms:
+    - architecture: x86_64
+      operating_systems:
+        - Linux
+        # - Darwin # TODO: needs small upstream build patches for support. As of writing, all x86 builds assume x86_LINUX. Darwin is missing a glibc header file for `__always_inline`
+      required_flags:
+        - avx2
+        - avx
+        - aes
+        - pclmulqdq
