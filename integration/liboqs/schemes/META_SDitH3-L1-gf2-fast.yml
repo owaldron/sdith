@@ -1,4 +1,4 @@
-name: sdith3-l1-gf2-fast # owaldron TODO: license?
+name: SDitH3-L1-gf2-fast
 type: signature
 claimed-nist-level: 1
 claimed-security: EUF-CMA
@@ -7,9 +7,23 @@ length-secret-key: 147
 length-signature: 4914
 nistkat-sha256: 41ccb6bad2eefe684dca736393e8c29bec7f2f3672492df6cff17c84f333cc03
 principal-submitters:
-- Nicolas Gama # owaldron TODO
-auxiliary-submitters:
-- Dongze Yue # owaldron TODO
+- Carlos Aguilar Melchor
+- Slim Bettaieb
+- Loïc Bidoux
+- Thibauld Feneuil
+- Philippe Gaborit
+- Nicolas Gama
+- Shay Gueron
+- James Howe
+- Andreas Hülsing
+- David Joseph
+- Antoine Joux
+- Mukul Kulkarni
+- Edoardo Persichetti
+- Tovohery H. Randrianarisoa
+- Matthieu Rivain
+- Dongze Yue
+auxiliary-submitters: []
 implementations:
 - name: ref
   version: round3
@@ -18,6 +32,7 @@ implementations:
   compile_opts: >-
     -DUSE_REFERENCE_CODE_ONLY
     -DSDITH3_FOR_LIBOQS
+    -DNDEBUG
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70
@@ -33,6 +48,7 @@ implementations:
   common_dep: sdith_common sdith_common_avx2
   compile_opts: >-
     -DSDITH3_FOR_LIBOQS
+    -DNDEBUG
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l1_gf2_fast_avx2_
     -DCRYPTO_SECRETKEYBYTES=147
     -DCRYPTO_PUBLICKEYBYTES=70
