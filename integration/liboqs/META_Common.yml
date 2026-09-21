@@ -1,13 +1,11 @@
 commons:
-  - name: sdith_common
+  - name: sdith_common_base
     folder_name: .
     sources: >- #aes128_ctrle_special_ref.c is excluded and liboqs AES is used instead
-      integration/liboqs/api.c
-      integration/liboqs/api.h
-      integration/liboqs/check_params.h
       integration/liboqs/fips202_glue.h
       integration/liboqs/fips202x4_glue.h
       integration/liboqs/aes_glue.h
+      integration/liboqs/sdith_namespace.h
       lib/aes/aes128_ctrle.h
       lib/aes/aes128_ctrle_special_ref.c
       lib/aes/rijndael256.c
@@ -45,6 +43,15 @@ commons:
       src/vole_private.h
       src/vole_to_piop.c
     include_only: true
+  - name: sdith_common_ref
+    folder_name: .
+    include_only: false
+    common_dep: sdith_common_base
+    compile_opts: >-
+      -DSDITH3_FOR_LIBOQS
+      -DNDEBUG
+      -DONLY_REF_IMPLEMENTATION
+      -DAPPLY_NAMESPACE=oqs_sig_private_sdith_ref_
   - name: sdith_common_avx2
     folder_name: .
     sources: >- # aes128_ctrle_special_avx2.c is intentionally included and isn't shimmed, since it offers improvements over liboqs AES
@@ -59,7 +66,12 @@ commons:
       src/matrix_vector_products_f2_avx2.c
       src/sdith_prng_avx2.c
       src/vole_parameters_avx2.c
-    include_only: true
+    include_only: false
+    common_dep: sdith_common_base
+    compile_opts: >-
+      -DSDITH3_FOR_LIBOQS
+      -DNDEBUG
+      -DAPPLY_NAMESPACE=oqs_sig_private_sdith_avx2_
     supported_platforms:
       - architecture: x86_64
         operating_systems:

@@ -28,10 +28,10 @@ implementations:
 - name: ref
   version: round3
   folder_name: .
-  common_dep: sdith_common
+  common_dep: sdith_common_ref
   compile_opts: >-
-    -DUSE_REFERENCE_CODE_ONLY
     -DSDITH3_FOR_LIBOQS
+    -DAPPLY_NAMESPACE=oqs_sig_private_sdith_ref_
     -DNDEBUG
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_
     -DCRYPTO_SECRETKEYBYTES=275
@@ -41,13 +41,14 @@ implementations:
   signature_keypair: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_crypto_sign_verify # prefix + crypto_sign_verify
-  sources: ""
+  sources: integration/liboqs/api.c integration/liboqs/api.h integration/liboqs/check_params.h
 - name: avx2
   version: round3
   folder_name: .
-  common_dep: sdith_common sdith_common_avx2
+  common_dep: sdith_common_avx2
   compile_opts: >-
     -DSDITH3_FOR_LIBOQS
+    -DAPPLY_NAMESPACE=oqs_sig_private_sdith_avx2_
     -DNDEBUG
     -DAPPLY_PUBLIC_API_NAMESPACE=oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_avx2_
     -DCRYPTO_SECRETKEYBYTES=275
@@ -57,7 +58,7 @@ implementations:
   signature_keypair: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_avx2_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l5_gf2_fast_cipherpow_avx2_crypto_sign_verify # prefix + crypto_sign_verify
-  sources: ""
+  sources: integration/liboqs/api.c integration/liboqs/api.h integration/liboqs/check_params.h
   supported_platforms:
     - architecture: x86_64
       operating_systems:

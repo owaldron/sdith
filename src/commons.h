@@ -1,6 +1,12 @@
 #ifndef COMMONS_H
 #define COMMONS_H
 
+/* liboqs links one shared copy of this code into every scheme variant, so the
+ * internal symbols need a namespace of their own. See gen_namespace.sh. */
+#ifdef SDITH3_FOR_LIBOQS
+#include "sdith_namespace.h"
+#endif
+
 #ifdef __cplusplus
 #define EXPORT extern "C"
 #define EXPORT_DECL extern "C"
