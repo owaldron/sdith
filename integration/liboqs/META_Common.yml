@@ -82,3 +82,7 @@ commons:
           - avx
           - aes
           - pclmulqdq
+  - name: sdith_common_api
+    folder_name: .
+    sources: integration/liboqs/api.c integration/liboqs/api.h integration/liboqs/check_params.h
+    include_only: true

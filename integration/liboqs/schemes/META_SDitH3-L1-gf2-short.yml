@@ -5,7 +5,7 @@ claimed-security: EUF-CMA
 length-public-key: 70
 length-secret-key: 147
 length-signature: 3721
-nistkat-sha256: d50d495fd8a0f2cb0463fcd3aef1398cf84b94bf0aff0fd69b5a1026b47e2047 # owaldron TODO
+nistkat-sha256: d50d495fd8a0f2cb0463fcd3aef1398cf84b94bf0aff0fd69b5a1026b47e2047
 principal-submitters:
 - Carlos Aguilar Melchor
 - Slim Bettaieb
@@ -28,7 +28,7 @@ implementations:
 - name: ref
   version: round3
   folder_name: .
-  common_dep: sdith_common_ref
+  common_dep: sdith_common_api sdith_common_ref
   compile_opts: >-
     -DSDITH3_FOR_LIBOQS
     -DAPPLY_NAMESPACE=oqs_sig_private_sdith_ref_
@@ -41,11 +41,11 @@ implementations:
   signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify
-  sources: integration/liboqs/api.c integration/liboqs/api.h integration/liboqs/check_params.h
+  sources: "" # all code comes from common_dep
 - name: avx2
   version: round3
   folder_name: .
-  common_dep: sdith_common_avx2
+  common_dep: sdith_common_api sdith_common_avx2
   compile_opts: >-
     -DSDITH3_FOR_LIBOQS
     -DAPPLY_NAMESPACE=oqs_sig_private_sdith_avx2_
@@ -58,7 +58,7 @@ implementations:
   signature_keypair: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_keypair # prefix + crypto_sign_keypair
   signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_short_avx2_crypto_sign_verify # prefix + crypto_sign_verify
-  sources: integration/liboqs/api.c integration/liboqs/api.h integration/liboqs/check_params.h
+  sources: "" # all code comes from common_dep
   supported_platforms:
     - architecture: x86_64
       operating_systems:
