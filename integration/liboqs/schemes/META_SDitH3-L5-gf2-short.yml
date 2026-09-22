@@ -42,6 +42,14 @@ implementations:
   signature_signature: oqs_sig_pubapi_sdith3_l5_gf2_short_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l5_gf2_short_crypto_sign_verify # prefix + crypto_sign_verify
   sources: "" # all code comes from common_dep
+  supported_platforms:
+    # __uint128_t only exists on targets with 128-bit integer support, so the
+    # reference code does not build on any 32-bit architecture.
+    - architecture: 64-bit
+      operating_systems:
+        - Linux
+        - Darwin
+        # - Windows # The reference code uses __uint128_t and GCC/Clang function attributes, so it does not build with MSVC
 - name: avx2
   version: round3
   folder_name: .

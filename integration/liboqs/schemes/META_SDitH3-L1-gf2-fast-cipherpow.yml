@@ -4,7 +4,7 @@ claimed-nist-level: 1
 claimed-security: EUF-CMA
 length-public-key: 70
 length-secret-key: 147
-length-signature: 4914
+length-signature: 4643
 nistkat-sha256: ce37d051dba74715aa3b5286970b688e2828a685279630e0ceac68b79c2e5607
 principal-submitters:
 - Carlos Aguilar Melchor
@@ -42,6 +42,14 @@ implementations:
   signature_signature: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_crypto_sign_sign # prefix + crypto_sign_sign
   signature_verify: oqs_sig_pubapi_sdith3_l1_gf2_fast_cipherpow_crypto_sign_verify # prefix + crypto_sign_verify
   sources: "" # all code comes from common_dep
+  supported_platforms:
+    # __uint128_t only exists on targets with 128-bit integer support, so the
+    # reference code does not build on any 32-bit architecture.
+    - architecture: 64-bit
+      operating_systems:
+        - Linux
+        - Darwin
+        # - Windows # The reference code uses __uint128_t and GCC/Clang function attributes, so it does not build with MSVC
 - name: avx2
   version: round3
   folder_name: .
