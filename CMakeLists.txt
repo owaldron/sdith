@@ -75,6 +75,9 @@ set(
         CAT5_FAST_CIPHERPOW
 )
 
+# Common includes for src and lib
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 add_subdirectory(lib/sha3)
 add_subdirectory(lib/aes)
 

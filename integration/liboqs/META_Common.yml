@@ -6,6 +6,7 @@ commons:
       integration/liboqs/fips202x4_glue.h
       integration/liboqs/aes_glue.h
       integration/liboqs/sdith_namespace.h
+      include/sdith_inline.h
       lib/aes/aes128_ctrle.h
       lib/aes/aes128_ctrle_special_ref.c
       lib/aes/rijndael256.c
