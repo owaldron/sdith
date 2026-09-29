@@ -188,7 +188,7 @@ EXPORT uint64_t sdith_keygen_entropy_bytes(const signature_parameters* sig_param
 }
 
 #define MAP_FIELD(POOL_NAME, FIELD_NAME, VAR_BYTES) \
-  FIELD_NAME = (typeof(FIELD_NAME))POOL_NAME;       \
+  FIELD_NAME = (__typeof__(FIELD_NAME))POOL_NAME;       \
   POOL_NAME += (VAR_BYTES)
 
 /** secret key mapping */
