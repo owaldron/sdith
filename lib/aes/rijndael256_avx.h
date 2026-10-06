@@ -1,6 +1,12 @@
 #ifndef RIJNDAEL256_AVX2__H
 #define RIJNDAEL256_AVX2__H
 
+/* liboqs links one shared copy of this code into every scheme variant, so the
+ * internal symbols need a namespace of their own. See gen_namespace.sh. */
+#ifdef SDITH3_FOR_LIBOQS
+#include "sdith_namespace.h"
+#endif
+
 #include "sdith_inline.h"
 
 #ifdef __cplusplus

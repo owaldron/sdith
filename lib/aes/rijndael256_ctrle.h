@@ -1,6 +1,12 @@
 #ifndef RIJNDAEL256_CTRLE_H
 #define RIJNDAEL256_CTRLE_H
 
+/* liboqs links one shared copy of this code into every scheme variant, so the
+ * internal symbols need a namespace of their own. See gen_namespace.sh. */
+#ifdef SDITH3_FOR_LIBOQS
+#include "sdith_namespace.h"
+#endif
+
 #ifdef __cplusplus
 #define EXPORT extern "C"
 #include <cstdint>

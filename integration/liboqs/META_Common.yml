@@ -5,6 +5,7 @@ commons:
       integration/liboqs/fips202_glue.h
       integration/liboqs/fips202x4_glue.h
       integration/liboqs/aes_glue.c
+      integration/liboqs/sdith_namespace.h
       include/sdith_inline.h
       lib/aes/aes_ansi_ref.h
       lib/aes/aes128_ctrle.h
