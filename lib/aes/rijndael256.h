@@ -1,6 +1,8 @@
 #ifndef RIJNDAEL256__H
 #define RIJNDAEL256__H
 
+#include "sdith_inline.h"
+
 #ifdef __cplusplus
 #define EXPORT extern "C"
 #include <cstdint>
