@@ -42,6 +42,15 @@ typedef int PROOFOW_VERIFY_W_F(    //
     bitvec_t* delta0_out,          //
     const uint64_t ctr_value       //
 );
+/** proof of work: release whatever the init took hold of */
+typedef void PROOFOW_RELEASE_F(proofow_ctx_t* proofow_state);
+// Only the cat1 cipher variant owns anything: its two aes128 schedules are heap
+// contexts on the liboqs backend (see aes_ansi_ref.h). The cat3/cat5 cipher
+// variants expand rijndael256 in place, the avx cat1 one expands aes128 in
+// place, and the shake variants hold no cipher state at all, so all of those
+// take proofow_release_noop.
+EXPORT void proofow_release_cipher_cat1_ref(proofow_ctx_t* proofow_state);
+EXPORT void proofow_release_noop(proofow_ctx_t* proofow_state);
 EXPORT uint64_t bytes_of_proofow_ctx_cipher_cat1();
 EXPORT void proofow_init_cipher_cat1_ref(                             //
     proofow_ctx_t* proofow_state,                                     //
@@ -199,6 +208,14 @@ typedef uint64_t EXTENDED_NODE_SEED_BYTES_F(void);
 typedef void EXTEND_LEAF_SEED_4X_F(void* extended_seed_out, const void* node_seed);
 
 EXPORT void extend_leaf_seed_cat1_aes128_ref(void* extended_seed_out, const void* seed128);
+
+/** When building for liboqs, cat1 aes128 uses the liboqs backend, which requires
+ * the extended-seed buffer to be prepared/released. See aes_ansi_ref.h for details. */
+typedef void EXTSEED_BUF_F(void* buf, uint64_t nslots, uint64_t slot_bytes);
+
+EXPORT void prepare_extseed_buf_cat1_aes128_ref(void* buf, uint64_t nslots, uint64_t slot_bytes);
+EXPORT void release_extseed_buf_cat1_aes128_ref(void* buf, uint64_t nslots, uint64_t slot_bytes);
+EXPORT void extseed_buf_noop(void* buf, uint64_t nslots, uint64_t slot_bytes);
 EXPORT void extend_leaf_seed_cat1_aes128_avx2(void* extended_seed_out, const void* seed128);
 EXPORT void extend_leaf_seed_cat3_rijndael256_ref(void* extended_seed_out, const void* seed192);
 EXPORT void extend_leaf_seed_cat3_rijndael256_avx2(void* extended_seed_out, const void* seed192);
@@ -397,6 +414,14 @@ EXPORT void matrix_rng_init_rijndael256_cat3_avx(matrix_rng_t* rng, const seed_t
 EXPORT void matrix_rng_init_rijndael256_cat5_ref(matrix_rng_t* rng, const seed_t* seed, const uint64_t row_bit_size);
 EXPORT void matrix_rng_init_rijndael256_cat5_avx(matrix_rng_t* rng, const seed_t* seed, const uint64_t row_bit_size);
 
+// Releases whatever matrix_rng_init took hold of. 
+// Only active in the cat1 aes128 ref path when building for liboqs, where key schedules
+// are heap-allocated (see aes_ansi_ref.h for details).
+// The avx and rijndael256 paths expand in place, so they take matrix_rng_release_noop.
+typedef void MATRIX_RNG_RELEASE(matrix_rng_t* rng);
+EXPORT void matrix_rng_release_aes128_cat1_ref(matrix_rng_t* rng);
+EXPORT void matrix_rng_release_noop(matrix_rng_t* rng);
+
 typedef void MATRIX_RNG_GET_ROW(const matrix_rng_t* rng, void* out, const uint64_t row_index);
 EXPORT void matrix_rng_get_row_aes128_cat1_ref(const matrix_rng_t* rng, void* out, const uint64_t row_index);
 EXPORT void matrix_rng_get_row_aes128_cat1_avx(const matrix_rng_t* rng, void* out, const uint64_t row_index);
@@ -500,6 +525,7 @@ EXPORT void matrix_rng_rows_times_chall_rijndael256_cat5_avx(const matrix_rng_t*
 // rather than falling back to the get_rows + flambda_dot_product pair.
 typedef struct matrix_rng_functions_t {
   MATRIX_RNG_INIT* matrix_rng_init;
+  MATRIX_RNG_RELEASE* matrix_rng_release;
   MATRIX_RNG_GET_ROW* matrix_rng_get_row;
   MATRIX_RNG_GET_ROWS* matrix_rng_get_rows;
   MATRIX_RNG_PREPROCESS_CHALL* matrix_rng_preprocess_chall;
@@ -508,6 +534,7 @@ typedef struct matrix_rng_functions_t {
 
 static const matrix_rng_functions matrix_rng_cat1_aes128_ref = {
     matrix_rng_init_aes128_cat1_ref,              //
+    matrix_rng_release_aes128_cat1_ref,           //
     matrix_rng_get_row_aes128_cat1_ref,           //
     matrix_rng_get_rows_aes128_cat1_ref,          //
     matrix_rng_preprocess_chall_aes128_cat1_ref,  //
@@ -515,6 +542,7 @@ static const matrix_rng_functions matrix_rng_cat1_aes128_ref = {
 };
 static const matrix_rng_functions matrix_rng_cat3_rijndael256_ref = {
     matrix_rng_init_rijndael256_cat3_ref,              //
+    matrix_rng_release_noop,                           //
     matrix_rng_get_row_rijndael256_cat3_ref,           //
     matrix_rng_get_rows_rijndael256_cat3_ref,          //
     matrix_rng_preprocess_chall_rijndael256_cat3_ref,  //
@@ -522,6 +550,7 @@ static const matrix_rng_functions matrix_rng_cat3_rijndael256_ref = {
 };
 static const matrix_rng_functions matrix_rng_cat5_rijndael256_ref = {
     matrix_rng_init_rijndael256_cat5_ref,              //
+    matrix_rng_release_noop,                           //
     matrix_rng_get_row_rijndael256_cat5_ref,           //
     matrix_rng_get_rows_rijndael256_cat5_ref,          //
     matrix_rng_preprocess_chall_rijndael256_cat5_ref,  //
@@ -532,6 +561,7 @@ static const matrix_rng_functions matrix_rng_cat5_rijndael256_ref = {
 #if defined(__x86_64__) && !defined(ONLY_REF_IMPLEMENTATION)
 static const matrix_rng_functions matrix_rng_cat1_aes128_avx = {
     matrix_rng_init_aes128_cat1_avx,              //
+    matrix_rng_release_noop,                      //
     matrix_rng_get_row_aes128_cat1_avx,           //
     matrix_rng_get_rows_aes128_cat1_avx,          //
     matrix_rng_preprocess_chall_aes128_cat1_avx,  //
@@ -539,6 +569,7 @@ static const matrix_rng_functions matrix_rng_cat1_aes128_avx = {
 };
 static const matrix_rng_functions matrix_rng_cat3_rijndael256_avx = {
     matrix_rng_init_rijndael256_cat3_avx,              //
+    matrix_rng_release_noop,                           //
     matrix_rng_get_row_rijndael256_cat3_avx,           //
     matrix_rng_get_rows_rijndael256_cat3_avx,          //
     matrix_rng_preprocess_chall_rijndael256_cat3_avx,  //
@@ -546,6 +577,7 @@ static const matrix_rng_functions matrix_rng_cat3_rijndael256_avx = {
 };
 static const matrix_rng_functions matrix_rng_cat5_rijndael256_avx = {
     matrix_rng_init_rijndael256_cat5_avx,              //
+    matrix_rng_release_noop,                           //
     matrix_rng_get_row_rijndael256_cat5_avx,           //
     matrix_rng_get_rows_rijndael256_cat5_avx,          //
     matrix_rng_preprocess_chall_rijndael256_cat5_avx,  //
@@ -583,34 +615,47 @@ EXPORT uint32_t keygen_rng_next_u32_aes128_cat1_avx(keygen_rng_ctx* rng);
 EXPORT uint32_t keygen_rng_next_u32_rijndael256_ref(keygen_rng_ctx* rng);
 EXPORT uint32_t keygen_rng_next_u32_rijndael256_avx(keygen_rng_ctx* rng);
 
+// Releases whatever keygen_rng_init took hold of: as for matrix_rng, only the
+// cat1 aes128 ref path owns a schedule.
+typedef void KEYGEN_RNG_RELEASE(keygen_rng_ctx* rng);
+EXPORT void keygen_rng_release_aes128_cat1_ref(keygen_rng_ctx* rng);
+EXPORT void keygen_rng_release_noop(keygen_rng_ctx* rng);
+
 typedef struct keygen_rng_functions_t {
   KEYGEN_RNG_INIT* init;
+  KEYGEN_RNG_RELEASE* release;
   KEYGEN_RNG_NEXT_U32* next_u32;
 } keygen_rng_functions;
 
 static const keygen_rng_functions keygen_rng_cat1_aes128_ref = {
     keygen_rng_init_aes128_cat1_ref,      //
+    keygen_rng_release_aes128_cat1_ref,   //
     keygen_rng_next_u32_aes128_cat1_ref,  //
 };
 static const keygen_rng_functions keygen_rng_cat3_rijndael256_ref = {
     keygen_rng_init_rijndael256_cat3_ref,  //
+    keygen_rng_release_noop,               //
     keygen_rng_next_u32_rijndael256_ref,   //
 };
 static const keygen_rng_functions keygen_rng_cat5_rijndael256_ref = {
     keygen_rng_init_rijndael256_cat5_ref,  //
+    keygen_rng_release_noop,               //
     keygen_rng_next_u32_rijndael256_ref,   //
 };
 #if defined(__x86_64__) && !defined(ONLY_REF_IMPLEMENTATION)
 static const keygen_rng_functions keygen_rng_cat1_aes128_avx = {
     keygen_rng_init_aes128_cat1_avx,      //
+    keygen_rng_release_noop,              //
     keygen_rng_next_u32_aes128_cat1_avx,  //
 };
 static const keygen_rng_functions keygen_rng_cat3_rijndael256_avx = {
     keygen_rng_init_rijndael256_cat3_avx,  //
+    keygen_rng_release_noop,               //
     keygen_rng_next_u32_rijndael256_avx,   //
 };
 static const keygen_rng_functions keygen_rng_cat5_rijndael256_avx = {
     keygen_rng_init_rijndael256_cat5_avx,  //
+    keygen_rng_release_noop,               //
     keygen_rng_next_u32_rijndael256_avx,   //
 };
 #endif

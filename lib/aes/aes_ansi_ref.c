@@ -470,3 +470,18 @@ EXPORT void aes128_set_key_ref(void* rk, const void* key128) { rijndaelKeySetupE
 EXPORT void aes128_encrypt_1block_ref(void* out_ct128, const void* in_pt128, const void* rk) {
   rijndaelEncrypt(rk, 10, in_pt128, out_ct128);
 }
+
+EXPORT void aes128_prepare_rk_buffer(void* rk, uint64_t nslots, uint64_t slot_bytes) {
+  // schedule is expanded in-place; nothing to prepare
+  (void) rk; (void) nslots; (void) slot_bytes;
+}
+
+EXPORT void aes128_set_key_reuse_ref(void* rk, const void* key128) {
+  aes128_set_key_ref(rk, key128);
+}
+
+
+EXPORT void aes128_release_key(void *rk) {
+  // no internals to release
+  (void) rk;
+}

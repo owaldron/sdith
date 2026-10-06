@@ -62,8 +62,11 @@ struct vole_parameters_t {
   PROOFOW_INIT_F* proofow_init;
   PROOFOW_GRIND_W_F* proofow_grind_w;
   PROOFOW_VERIFY_W_F* proofow_verify_w;
+  PROOFOW_RELEASE_F* proofow_release;
   EXTEND_LEAF_SEED_F* extend_leaf_seed;
   EXTEND_LEAF_SEED_4X_F* extend_leaf_seed_4x;
+  EXTSEED_BUF_F* prepare_extseed_buf;
+  EXTSEED_BUF_F* release_extseed_buf;
   EXTENDED_NODE_SEED_BYTES_F* extended_node_seed_bytes;
   GGM_EXTSEED_RNG_LR_F* ggm_extseed_rng_lr;
   GGM_EXTSEED_RNG_LR_X4_F* ggm_extseed_rng_lr_x4;  // I8: batched 4-node variant; NULL => four ggm_extseed_rng_lr calls

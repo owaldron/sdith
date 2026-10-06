@@ -62,6 +62,7 @@ EXPORT void rsd_generate_random_instance_ref(            //
     uint32_t quo;
     vole_params->ct.div_rem_u32(&quo, &solution[i], pos, npw);
   }
+  vole_params->keygen_rng.release(&sk_rng);
   // prepare the pk_rng to draw rows of h (row-wise matrix prng)
   matrix_rng_t pk_rng;
   vole_params->matrix_prg.matrix_rng_init(&pk_rng, pk_seed, rsd_codim);
@@ -88,6 +89,7 @@ EXPORT void rsd_generate_random_instance_ref(            //
     // mask, but the position must stay inside y for the debug range check)
     vole_params->ct.bitvec_xorbit(y, col_bytes, real_index & in_id, in_id);
   }
+  vole_params->matrix_prg.matrix_rng_release(&pk_rng);
 }
 
 /** expand the public key from the pubkey seed */
@@ -126,6 +128,7 @@ EXPORT void rsd_expand_public_key_ref(                   //
       vole_params->matrix_prg.matrix_rng_get_row(&h_rng, hh + h_slice_bytes * i, i);
     }
   }
+  vole_params->matrix_prg.matrix_rng_release(&h_rng);
 }
 
 EXPORT uint64_t rsd_public_key_times_challenge_tmp_bytes(const vole_parameters* vole_params,  //
@@ -211,6 +214,7 @@ EXPORT void rsd_public_key_times_challenge_ref(          //
   vole_params->matrix_prg.matrix_rng_init(&h_rng, pk_seed, rsd_codim);
   vole_params->matrix_prg.matrix_rng_preprocess_chall(&h_rng, scratch, chall_a);
   vole_params->matrix_prg.matrix_rng_rows_times_chall(&h_rng, dest, scratch, 0, n_minus_k);
+  vole_params->matrix_prg.matrix_rng_release(&h_rng);
 #ifndef NDEBUG
   dest += n_minus_k * lambda_bytes;
   CASSERT(dest == chall_a_H + rsd_n * lambda_bytes, "bug!");

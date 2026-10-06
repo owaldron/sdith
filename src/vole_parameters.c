@@ -26,18 +26,22 @@ EXPORT void vole_parameters_init_with_variant_ref(vole_parameters* vole_params, 
           vole_params->proofow_init = proofow_init_shake_cat1;
           vole_params->proofow_grind_w = proofow_grind_w_shake_cat1;
           vole_params->proofow_verify_w = proofow_verify_w_shake_cat1;
+          vole_params->proofow_release = proofow_release_noop;
           break;
         case PROOFOW_VARIANT_CIPHER:
           vole_params->bytes_of_proofow_ctx = bytes_of_proofow_ctx_cipher_cat1;
           vole_params->proofow_init = proofow_init_cipher_cat1_ref;
           vole_params->proofow_grind_w = proofow_grind_w_cipher_cat1_ref;
           vole_params->proofow_verify_w = proofow_verify_w_cipher_cat1_ref;
+          vole_params->proofow_release = proofow_release_cipher_cat1_ref;
           break;
         default:
           CREQUIRE(0, "Unknown proof-of-work variant");
       }
       vole_params->extend_leaf_seed = extend_leaf_seed_cat1_aes128_ref;
       vole_params->extend_leaf_seed_4x = extend_leaf_seed_cat1_aes128_4x_ref;
+      vole_params->prepare_extseed_buf = prepare_extseed_buf_cat1_aes128_ref;
+      vole_params->release_extseed_buf = release_extseed_buf_cat1_aes128_ref;
       vole_params->extended_node_seed_bytes = extended_node_seed_bytes_cat1_aes128;
       vole_params->ggm_extseed_rng_lr = ggm_seed_rng_lr_ext_cat1_aes128_ref;
       vole_params->ggm_extseed_rng_lr_x4 = ggm_seed_rng_lr_ext_cat1_aes128_x4_ref;  // I8: naive four calls
@@ -68,18 +72,22 @@ EXPORT void vole_parameters_init_with_variant_ref(vole_parameters* vole_params, 
           vole_params->proofow_init = proofow_init_shake_cat3;
           vole_params->proofow_grind_w = proofow_grind_w_shake_cat3;
           vole_params->proofow_verify_w = proofow_verify_w_shake_cat3;
+          vole_params->proofow_release = proofow_release_noop;
           break;
       case PROOFOW_VARIANT_CIPHER:
           vole_params->bytes_of_proofow_ctx = bytes_of_proofow_ctx_cipher_cat3;
           vole_params->proofow_init = proofow_init_cipher_cat3_ref;
           vole_params->proofow_grind_w = proofow_grind_w_cipher_cat3_ref;
           vole_params->proofow_verify_w = proofow_verify_w_cipher_cat3_ref;
+          vole_params->proofow_release = proofow_release_noop;
           break;
       default:
           CREQUIRE(0, "Unknown proof-of-work variant");
       }
       vole_params->extend_leaf_seed = extend_leaf_seed_cat3_rijndael256_ref;
       vole_params->extend_leaf_seed_4x = extend_leaf_seed_cat3_rijndael256_4x_ref;
+      vole_params->prepare_extseed_buf = extseed_buf_noop;
+      vole_params->release_extseed_buf = extseed_buf_noop;
       vole_params->extended_node_seed_bytes = extended_node_seed_bytes_cat3_rijndael256;
       vole_params->ggm_extseed_rng_lr = ggm_seed_rng_lr_ext_cat3_rijndael256_ref;
       vole_params->ggm_extseed_rng_lr_x4 = ggm_seed_rng_lr_ext_cat3_rijndael256_x4_ref;  // I8: naive four calls
@@ -110,18 +118,22 @@ EXPORT void vole_parameters_init_with_variant_ref(vole_parameters* vole_params, 
           vole_params->proofow_init = proofow_init_shake_cat5;
           vole_params->proofow_grind_w = proofow_grind_w_shake_cat5;
           vole_params->proofow_verify_w = proofow_verify_w_shake_cat5;
+          vole_params->proofow_release = proofow_release_noop;
           break;
       case PROOFOW_VARIANT_CIPHER:
           vole_params->bytes_of_proofow_ctx = bytes_of_proofow_ctx_cipher_cat5;
           vole_params->proofow_init = proofow_init_cipher_cat5_ref;
           vole_params->proofow_grind_w = proofow_grind_w_cipher_cat5_ref;
           vole_params->proofow_verify_w = proofow_verify_w_cipher_cat5_ref;
+          vole_params->proofow_release = proofow_release_noop;
           break;
       default:
           CREQUIRE(0, "Unknown proof-of-work variant");
       }
       vole_params->extend_leaf_seed = extend_leaf_seed_cat5_rijndael256_ref;
       vole_params->extend_leaf_seed_4x = extend_leaf_seed_cat5_rijndael256_4x_ref;
+      vole_params->prepare_extseed_buf = extseed_buf_noop;
+      vole_params->release_extseed_buf = extseed_buf_noop;
       vole_params->extended_node_seed_bytes = extended_node_seed_bytes_cat5_rijndael256;
       vole_params->ggm_extseed_rng_lr = ggm_seed_rng_lr_ext_cat5_rijndael256_ref;
       vole_params->ggm_extseed_rng_lr_x4 = ggm_seed_rng_lr_ext_cat5_rijndael256_x4_ref;  // I8: naive four calls

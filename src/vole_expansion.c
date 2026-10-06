@@ -134,6 +134,8 @@ EXPORT void prover_generate_midsize_grey_vole_from_seeds_bfs_ct_ref(  //
   TMP_SPACE_MAP_ALIGNED(uint8_t**, commit_ptrs, 8, TAU * sizeof(uint8_t*));
   TMP_SPACE_MAP_ALIGNED(bitvec_t**, uu, 8, TAU * sizeof(bitvec_t*));
   TMP_SPACE_MAP_ALIGNED(bitmat_t**, vv, 8, TAU * sizeof(bitmat_t*));
+  // prepeare the buffer to be used for extended seeds (no-op unless the liboqs aes128 backend is in use)
+  vole_params->prepare_extseed_buf(ext_seeds, 4 * TAU, EXT_BYTES);
   // the two domain-separated salts: one for the GGM tree, one for the vole rng
   uint64_t* const ggm_masked_salt = masked_salts;
   uint64_t* const vole_masked_salt = masked_salts + (SEED_BYTES >> 3);
@@ -245,6 +247,10 @@ EXPORT void prover_generate_midsize_grey_vole_from_seeds_bfs_ct_ref(  //
   vole_params->xof.xof_seed(&commits_xof, subhashes, 2 * TAU * LAMBDA_BYTES);
   vole_params->xof.xof_finalize_and_output(&commits_xof, commits_hash, 2 * LAMBDA_BYTES);
   vole_params->xof.xof_ctx_release(&commits_xof);
+
+  // release any per-slot state the ext_seed backend cached (no-op unless the
+  // liboqs aes128 backend is in use)
+  vole_params->release_extseed_buf(ext_seeds, 4 * TAU, EXT_BYTES);
 }
 
 /**
@@ -332,6 +338,8 @@ EXPORT void verifier_open_midsize_grey_vole_from_seeds_bfs_ref(  //
   TMP_SPACE_MAP_ALIGNED(bitmat_t**, qq, 8, TAU * sizeof(bitmat_t*));
   TMP_SPACE_MAP_ALIGNED(uint32_t*, hidden_nodes_idx, 8, (2 * TAU + topen + 1) * sizeof(uint32_t));
   TMP_SPACE_MAP_ALIGNED(uint32_t*, sibling_nodes_idx, 8, (topen + 1) * sizeof(uint32_t));
+  // prepeare the buffer to be used for extended seeds (no-op unless the liboqs aes128 backend is in use)
+  vole_params->prepare_extseed_buf(ext_seeds, 4 * TAU, EXT_BYTES);
   // the two domain-separated salts: one for the GGM tree, one for the vole rng
   uint64_t* const ggm_masked_salt = masked_salts;
   uint64_t* const vole_masked_salt = masked_salts + (SEED_BYTES >> 3);
@@ -532,6 +540,10 @@ EXPORT void verifier_open_midsize_grey_vole_from_seeds_bfs_ref(  //
       }
     }
   }
+
+  // release any per-slot state the ext_seed backend cached (no-op unless the
+  // liboqs aes128 backend is in use)
+  vole_params->release_extseed_buf(ext_seeds, 4 * TAU, EXT_BYTES);
 }
 
 
@@ -624,6 +636,8 @@ EXPORT void full_ggm_tree_open_sibling_path_from_root(  //
   TMP_SPACE_MAP_ALIGNED(uint8_t*, seeds, 32, 2 * BUF_SIZE_MAX * SEED_BYTES);
   TMP_SPACE_MAP_ALIGNED(uint32_t*, node_indexes, 8, BUF_SIZE_MAX * sizeof(uint32_t));
   TMP_SPACE_MAP_ALIGNED(uint8_t*, node_actions, 8, BUF_SIZE_MAX * sizeof(uint8_t));
+  // prepeare the buffer to be used for extended seeds (no-op unless the liboqs aes128 backend is in use)
+  vole_params->prepare_extseed_buf(ext_seed, 1, EXT_BYTES);
   // only the GGM salt is needed here: this path does not draw any vole randomness
   compute_tweaked_salts(vole_params, ggm_masked_salt, NULL, global_salt);
   CASSERT(THETA <= GGM_TWEAK_BITS, "bug! the tree is too deep for the salt tweak field");
@@ -737,6 +751,10 @@ EXPORT void full_ggm_tree_open_sibling_path_from_root(  //
     vole_params->ggm_extseed_rng_commit(hidden_leaves_commits + i * COMMIT_BYTES, ggm_masked_salt, ext_seed,
                                         node_indexes[TAU - i - 1]);
   }
+
+  // release any per-slot state the ext_seed backend cached (no-op unless the
+  // liboqs aes128 backend is in use)
+  vole_params->release_extseed_buf(ext_seed, 1, EXT_BYTES);
 }
 
 EXPORT void prover_midsize_to_fullsize_std_vole_ct_ref(const vole_parameters* vole_params, uint64_t L, bitvec_t* out_u,

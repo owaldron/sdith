@@ -5,10 +5,12 @@
 
 #ifdef SDITH3_FOR_LIBOQS
 #include "aes128_ctrle.h"
+#include "aes_ansi_ref.h"
 #include "fips202_glue.h"
 #include "fips202x4_glue.h"
 #else
 #include "../aes/aes128_ctrle.h"
+#include "../aes/aes_ansi_ref.h"
 #include "../sha3/KeccakHash.h"
 #include "../sha3/KeccakHashtimes4.h"
 #endif
@@ -66,7 +68,10 @@ GGM_EXTSEED_RNG_LR_X4_NAIVE(ggm_seed_rng_lr_ext_cat5_rijndael256_x4_ref,  //
 // mirrors the raw commit/vole paths exactly, so outputs stay byte-identical.
 // ---------------------------------------------------------------------------
 EXPORT void extend_leaf_seed_cat1_aes128_ref(void* extended_seed_out, const void* seed128) {
-  aes128_key_schedule_x1_ref(extended_seed_out, seed128);
+  // The ext_seeds slots are re-keyed thousands of times per signature, so take the
+  // reuse path: on the liboqs backend that avoids an allocation per leaf seed.
+  // Requires the buffer to have been passed to aes128_prepare_rk_buffer first.
+  aes128_set_key_reuse_ref(extended_seed_out, seed128);
 }
 EXPORT void extend_leaf_seed_cat3_rijndael256_ref(void* extended_seed_out, const void* seed192) {
   uint8_t key256[32] = {};  // k || 0^64
@@ -96,6 +101,16 @@ EXPORT void extend_leaf_seed_cat5_rijndael256_4x_ref(void* extended_seed_out, co
   for (int i = 0; i < 4; i++) extend_leaf_seed_cat5_rijndael256_ref(out + i * RIJNDAEL256_RK_BYTES, s + i * 32);
 }
 
+EXPORT void prepare_extseed_buf_cat1_aes128_ref(void* buf, uint64_t nslots, uint64_t slot_bytes) {
+  aes128_prepare_rk_buffer(buf, nslots, slot_bytes);
+}
+EXPORT void release_extseed_buf_cat1_aes128_ref(void* buf, uint64_t nslots, uint64_t slot_bytes) {
+  uint8_t* p = (uint8_t*) buf;
+  for (uint64_t i = 0; i < nslots; ++i) aes128_release_key(p + i * slot_bytes);
+}
+EXPORT void extseed_buf_noop(void* buf, uint64_t nslots, uint64_t slot_bytes) {
+  (void) buf; (void) nslots; (void) slot_bytes;   // rijndael256: schedule is in-place
+}
 
 EXPORT uint64_t extended_node_seed_bytes_cat1_aes128(void) { return 16 * 11; }
 EXPORT uint64_t extended_node_seed_bytes_cat3_rijndael256(void) { return RIJNDAEL256_RK_BYTES; }
@@ -454,6 +469,17 @@ EXPORT int proofow_verify_w_cipher_cat1_ref(proofow_ctx_t* proofow_state, bitvec
   xof_ctx_release_shake128(&xof);
   return 1;
 }
+
+EXPORT void proofow_release_cipher_cat1_ref(proofow_ctx_t* proofow_state) {
+  struct proofow_state128_t* const s = (struct proofow_state128_t*)proofow_state;
+  aes128_release_key(s->rk[0]);
+  aes128_release_key(s->rk[1]);
+}
+
+// Shared by every proof-of-work variant that holds no schedule of its own: the
+// cat3/cat5 cipher ones expand rijndael256 in place, the avx cat1 one expands
+// aes128 in place, and the shake ones run no cipher at all.
+EXPORT void proofow_release_noop(proofow_ctx_t* proofow_state) { (void)proofow_state; }
 
 // cipher-based proof of work (cat5: rijndael256 block cipher + shake256 xof)
 
@@ -890,6 +916,14 @@ EXPORT void matrix_rng_init_rijndael256_cat5_ref(matrix_rng_t* rng, const seed_t
   set_2_b_minus_one(r->last_blk_mask.v64, 4, row_bit_size & 255);
 }
 
+EXPORT void matrix_rng_release_aes128_cat1_ref(matrix_rng_t* rng) {
+  struct matrix_rng_aes128_cat1_t* r = (struct matrix_rng_aes128_cat1_t*) rng;
+  aes128_release_key(r->rk);
+}
+
+// cat3/cat5 (and the avx cat1 path) expand their schedule inside the context.
+EXPORT void matrix_rng_release_noop(matrix_rng_t* rng) { (void)rng; }
+
 EXPORT void matrix_rng_get_row_aes128_cat1_ref(const matrix_rng_t* rng, void* out, const uint64_t row_index) {
   struct matrix_rng_aes128_cat1_t* r = (struct matrix_rng_aes128_cat1_t*) rng;
   CASSERT((((uint64_t)out) & 15) == 0, "out must be 16-byte aligned");
@@ -1104,6 +1138,14 @@ EXPORT void keygen_rng_init_rijndael256_cat5_ref(keygen_rng_ctx* rng, const seed
   rijndael256_key_schedule_x1_ref(s->rk, sk_seed);
   KEYGEN_RNG_INIT_EMPTY(s);
 }
+
+EXPORT void keygen_rng_release_aes128_cat1_ref(keygen_rng_ctx* rng) {
+  struct keygen_rng_aes128_cat1_t* s = (struct keygen_rng_aes128_cat1_t*) rng;
+  aes128_release_key(s->rk);
+}
+
+// cat3/cat5 (and the avx cat1 path) expand their schedule inside the context.
+EXPORT void keygen_rng_release_noop(keygen_rng_ctx* rng) { (void)rng; }
 
 DEFINE_KEYGEN_RNG_NEXT_U32(keygen_rng_next_u32_aes128_cat1_ref, keygen_rng_aes128_cat1_t, ctr128_t,
                            aes128_ctrle_nocarry_nblocks_ref)

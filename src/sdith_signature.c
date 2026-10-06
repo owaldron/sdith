@@ -499,6 +499,7 @@ EXPORT void sdith_sign(const signature_parameters* sig_params,       //
     if (topen <= par.target_topen) break; // success!
     ++pow_ctr;
   }
+  par.vole_params.proofow_release(pow_ctx);
   memcpy(sign.proofow_ctr_reveal, &pow_ctr, PROOFOW_CTR_REVEALED_BYTES);
 
   // generate delta1
@@ -635,6 +636,7 @@ EXPORT uint8_t sdith_verify(const signature_parameters* sig_params,       //
   memcpy(&proof_of_work_counter, sign.proofow_ctr_reveal, PROOFOW_CTR_REVEALED_BYTES);  // load the golden counter
   par.vole_params.proofow_init(pow_ctx, par.lambda, par.kappa, par.tau, par.proofow_w, sign.hash_piop);
   int r = par.vole_params.proofow_verify_w(pow_ctx, verif_delta0, proof_of_work_counter);
+  par.vole_params.proofow_release(pow_ctx);
   VERIFY_OR_FAIL(r, "invalid proof of work: vgrind");
   VERIFY_OR_FAIL(!bitvec_is_zero_nonct(verif_delta0, par.tau * par.kappa), "invalid proof of work: zero");
   hidden_leaves_indexes2(par.kappa, par.tau, verif_hidden_leaves_idx, verif_delta0);

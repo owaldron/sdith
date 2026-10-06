@@ -3,6 +3,9 @@
 #include "aes128_ctrle.h"
 #include "aes_ansi_ref.h"
 
+#ifdef SDITH3_FOR_LIBOQS
+#include <oqs/aes.h>
+#endif
 
 /* -------- batched key schedule (ref: just loop the scalar x1) -------- */
 EXPORT void aes128_key_schedule_x1_ref(void* rk0, const void* k0) { aes128_set_key_ref(rk0, k0); }
@@ -31,10 +34,24 @@ static inline void aes128_nocarry_ref_impl(void* out, const void* round_keys, co
   ctr128_t ctr;
   uint8_t* oo = (uint8_t*)out;
   memcpy(ctr.v8, ctr_block, 16);
+#ifndef SDITH3_FOR_LIBOQS
+  /* reference implementation */
   for (uint64_t i = 0; i < nblocks; ++i) {
     aes128_encrypt_1block_ref(oo + 16 * i, ctr.v8, round_keys);
     ctr.v64[0] += 1;  // low-64 increment only, no middle carry
   }
+#else
+  /* LIBOQS implementation: round_keys caches a schedule pointer (see aes_glue.c),
+   * it is not a raw key. ECB over nblocks*16 bytes is nblocks independent block
+   * encryptions, so the whole counter run goes out in a single call. */
+  void* schedule = NULL;
+  memcpy(&schedule, round_keys, sizeof(void*));
+  for (uint64_t i = 0; i < nblocks; ++i) {
+    memcpy(oo + 16 * i, ctr.v8, 16);
+    ctr.v64[0] += 1;  // low-64 increment only, no middle carry
+  }
+  OQS_AES128_ECB_enc_sch(oo, 16 * nblocks, schedule, oo);
+#endif
 }
 EXPORT void aes128_ctrle_nocarry_1block_ref(void* out, const void* round_keys, const void* ctr_block) {
   aes128_nocarry_ref_impl(out, round_keys, ctr_block, 1);
